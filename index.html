@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FFGaussType: Feed-Forward Conversion of Glyph and SVG Geometry into Compact Gaussian Assets</title>
+  <meta name="description" content="FFGaussType converts extruded glyph and SVG outlines into Gaussian assets with surface normals in one forward pass. Materials and lighting are assigned afterwards.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="FFGaussType: Feed-Forward Conversion of Glyph and SVG Geometry into Compact Gaussian Assets">
+  <meta property="og:description" content="One-pass conversion of glyph and SVG geometry into Gaussian assets with surface normals; materials and lighting are assigned afterwards.">
+  <meta property="og:url" content="https://fengyee.github.io/FFGaussType/">
+  <meta property="og:image" content="https://fengyee.github.io/FFGaussType/static/images/social-preview.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233B48FE'/%3E%3Cpath d='M20 14h26v9H30v7h13v9H30v11H20z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="static/css/style.css">
+  <script src="static/js/main.js" defer></script>
+</head>
+<body>
+
+
+<header class="hero">
+  <div class="container">
+    <h1 class="title">
+      <span class="title-name">FFGaussType</span>
+      <span class="title-sub">Feed-Forward Conversion of Glyph and SVG Geometry into Compact Gaussian Assets</span>
+    </h1>
+
+    <ul class="authors" aria-label="Authors">
+      <li>Haoan Feng<sup>1,*</sup></li>
+      <li>Tianfu Wang<sup>1,*</sup></li>
+      <li>Peimeng Guan<sup>2</sup></li>
+      <li>Dae Yeol Lee<sup>2</sup></li>
+      <li>Guan-ming Su<sup>2</sup></li>
+    </ul>
+    <ul class="affiliations" aria-label="Affiliations">
+      <li><sup>1</sup>University of Maryland, College Park</li>
+      <li><sup>2</sup>Dolby Laboratories Inc.</li>
+    </ul>
+    <p class="author-note"><sup>*</sup>Work done during an internship at Dolby Laboratories.</p>
+
+    <nav class="links" aria-label="Resources">
+      <a class="button is-pending" aria-disabled="true">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z M14 2v6h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span>arXiv<small>coming soon</small></span>
+      </a>
+      <a class="button is-pending" aria-disabled="true">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Code<small>after publication</small></span>
+      </a>
+      <a class="button is-pending" aria-disabled="true">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        <span>Dataset<small>after publication</small></span>
+      </a>
+      <a class="button" href="#bibtex">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 4H5v16h2M17 4h2v16h-2M9 9h6M9 13h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>BibTeX</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="container" aria-labelledby="overview-heading">
+    <h2 id="overview-heading" class="visually-hidden">Overview</h2>
+    <figure class="plate wide">
+      <a class="zoom" href="static/images/teaser.webp" title="Open full resolution"><img src="static/images/teaser.webp" width="2400" height="891" alt="Overview figure. Glyph and SVG icon outlines enter FFGaussType, which converts them in 9.1 ms per asset into Gaussian-format geometry shown as normal-coloured renderings. A scene graph groups a video, the word COFFEE with asset instances F1, F2 of asset A_F and E1, E2 of asset A_E, light sources and icons. Below, the word, a star and a heart are composited into the Coffee Martini scene, with an inset showing a second view of the same setup."></a>
+      <figcaption>
+        <strong>Convert once, reuse anywhere.</strong>
+        Glyph and icon outlines become Gaussian assets with surface normals in 9.1&nbsp;ms each.
+        Every asset is stored once and instanced with its own material, here inside the Coffee Martini scene<sup class="cite"><a href="#ref-8">[8]</a></sup>.
+      </figcaption>
+    </figure>
+
+    <p class="lead">
+      Bring text and icons into volumetric videos built on 4D Gaussians.
+      FFGaussType converts an extruded glyph or SVG outline into a Gaussian asset in a single forward pass. Its surface normals let creators restyle material and lighting freely, without converting again.
+    </p>
+
+    <ul class="stats" aria-label="Key numbers">
+      <li>
+        <span class="stat-value">9.1<span class="unit">ms</span></span>
+        <span class="stat-label">to convert one asset</span>
+      </li>
+      <li>
+        <span class="stat-value">1.62<span class="unit">&deg;</span></span>
+        <span class="stat-label">normal error on unseen fonts and icons</span>
+      </li>
+      <li>
+        <span class="stat-value">23.9<span class="unit">kB</span></span>
+        <span class="stat-label">per asset with HEVC video coding</span>
+      </li>
+      <li>
+        <span class="stat-value">27,221</span>
+        <span class="stat-label">paired glyph and icon assets</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="container narrow" aria-labelledby="abstract-heading">
+    <h2 id="abstract-heading">Abstract</h2>
+    <p class="abstract">
+      Immersive 3D content allows text and graphical elements, such as subtitles, annotations, and icons, to be placed inside a scene rather than displayed as flat overlays.
+      Placed this way, they respect occlusion and perspective and take on user-assigned materials and lighting while preserving their original shapes.
+      In Gaussian scenes, however, each new glyph or icon requires its own iterative optimization, which limits scalable content creation.
+      We present FFGaussType, which converts extruded glyph and SVG outlines into Gaussian assets in a single forward pass.
+      A point encoder maps anchors sampled on the known surface to a single feature plane, from which a decoder shared by all assets predicts neural Gaussians carrying surface normals.
+      This separates geometric conversion from material and lighting choices, and the feature plane supports image and video coding for compact delivery.
+      We construct a paired dataset of 27,221 glyph and SVG icon assets with anchors and calibrated normal and silhouette renderings, holding out font families for evaluation.
+      Conversion from prepared anchors takes 9.1&nbsp;ms per asset, at a fraction of the compute and memory of prior baselines.
+      On unseen font families and test icons, FFGaussType achieves 1.62&deg; normal error and 0.985 silhouette IoU, the best among the compared feed-forward converters, matching the fidelity that per-asset fitting needs thousands of steps to reach.
+      The code and dataset will be released after publication.
+    </p>
+  </section>
+
+  <section class="container" id="method" aria-labelledby="method-heading">
+    <h2 id="method-heading">Method</h2>
+    <figure class="plate wide">
+      <a class="zoom" href="static/images/pipeline.webp" title="Open full resolution"><img src="static/images/pipeline.webp" width="2400" height="762" loading="lazy" alt="Pipeline diagram. An extruded F is sampled into surface anchors; the encoder produces a single 64 by 64 feature plane with 48 channels; a shared five-head decoder queries the plane with the anchor coordinates and camera direction and outputs neural Gaussians per anchor, which are rasterized into normals and alpha for supervision. Rendered normals feed deferred PBR shading under user-assigned material, light and environment map."></a>
+      <figcaption>
+        <strong>Pipeline.</strong>
+        Surface anchors are encoded into one feature plane; a shared decoder turns it into neural Gaussians with normals, which are shaded with any material and lighting.
+      </figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li>
+        <h3><span class="step-index">1</span>Encode</h3>
+        <p>A point transformer maps surface anchors to a single 64&times;64 feature plane. The anchors and this plane are the whole asset.</p>
+      </li>
+      <li>
+        <h3><span class="step-index">2</span>Decode</h3>
+        <p>A small decoder shared by all assets reads the plane and predicts Gaussians carrying surface normals.</p>
+      </li>
+      <li>
+        <h3><span class="step-index">3</span>Shade</h3>
+        <p>Creators pick materials and lights at render time and can change them whenever they like; the geometry stays as converted.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="container" id="results" aria-labelledby="results-heading">
+    <h2 id="results-heading">Results</h2>
+    <p class="narrow-text section-intro">
+      FFGaussType is the most accurate of the compared feed-forward converters and the cheapest to run, at 9.1&nbsp;ms and 97&nbsp;MiB per asset.
+      Ten seconds of refinement surpasses every per-asset fitting baseline in normal accuracy.
+    </p>
+
+    <figure class="table-figure">
+      <figcaption>
+        <strong>Normal error and silhouette IoU on held-out views.</strong>
+        <span class="mark best">Best</span> and <span class="mark second">second best</span> per block.
+      </figcaption>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Conversion fidelity table, scrollable">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Method</th>
+              <th scope="col">Input</th>
+              <th scope="col" class="num">Normal (&deg;) &darr;</th>
+              <th scope="col" class="num">Edge band (&deg;) &darr;</th>
+              <th scope="col" class="num">&Delta; normal</th>
+              <th scope="col" class="num">IoU &uarr;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="group"><th colspan="6" scope="colgroup">Full test split: 2,657 assets</th></tr>
+            <tr><th scope="row">TexGaussian<sup class="cite"><a href="#ref-1">[1]</a></sup></th><td>Mesh &rarr; points/normals</td><td class="num second">1.957</td><td class="num second">13.86</td><td class="num">+0.339</td><td class="num">0.9595</td></tr>
+            <tr><th scope="row">TriplaneGaussian<sup class="cite"><a href="#ref-2">[2]</a></sup></th><td>Anchors + 1 view</td><td class="num">5.926</td><td class="num">18.84</td><td class="num">+4.308</td><td class="num second">0.9810</td></tr>
+            <tr><th scope="row">LGM<sup class="cite"><a href="#ref-3">[3]</a></sup></th><td>4 views</td><td class="num">12.873</td><td class="num">32.51</td><td class="num">+11.255</td><td class="num">0.9576</td></tr>
+            <tr class="ours"><th scope="row">FFGaussType</th><td>Anchors</td><td class="num best">1.618</td><td class="num best">8.98</td><td class="num">&ndash;</td><td class="num best">0.9851</td></tr>
+          </tbody>
+          <tbody>
+            <tr class="group"><th colspan="6" scope="colgroup">64-asset fitting subset</th></tr>
+            <tr><th scope="row">3DGS<sup class="cite"><a href="#ref-4">[4]</a></sup>, 500 steps</th><td>Anchors + available views</td><td class="num">5.185</td><td class="num">21.95</td><td class="num">+3.484</td><td class="num">0.8357</td></tr>
+            <tr><th scope="row">3DGS, 2k</th><td>Anchors + available views</td><td class="num">2.123</td><td class="num">14.74</td><td class="num">+0.422</td><td class="num">0.9405</td></tr>
+            <tr><th scope="row">3DGS, 32k</th><td>Anchors + available views</td><td class="num">2.099</td><td class="num">13.97</td><td class="num">+0.398</td><td class="num">0.9811</td></tr>
+            <tr><th scope="row">Scaffold-GS<sup class="cite"><a href="#ref-5">[5]</a></sup>, 2k</th><td>Anchors + available views</td><td class="num">2.733</td><td class="num">16.55</td><td class="num">+1.032</td><td class="num">0.9400</td></tr>
+            <tr><th scope="row">Scaffold-GS, 32k</th><td>Anchors + available views</td><td class="num second">1.514</td><td class="num">10.95</td><td class="num">&minus;0.187</td><td class="num best">0.9863</td></tr>
+            <tr><th scope="row">Plane-and-decoder fitting, 32k</th><td>Anchors + available views</td><td class="num">1.897</td><td class="num">13.35</td><td class="num">+0.196</td><td class="num">0.9828</td></tr>
+            <tr><th scope="row">Mesh2Splat<sup class="cite"><a href="#ref-6">[6]</a></sup>, default</th><td>Mesh</td><td class="num">2.371</td><td class="num">20.89</td><td class="num">+0.670</td><td class="num">0.9535</td></tr>
+            <tr><th scope="row">GaMeS<sup class="cite"><a href="#ref-7">[7]</a></sup>, 32k</th><td>Mesh + available views</td><td class="num">2.764</td><td class="num">15.71</td><td class="num">+1.063</td><td class="num">0.9700</td></tr>
+            <tr class="ours"><th scope="row">FFGaussType</th><td>Anchors</td><td class="num">1.701</td><td class="num best">8.90</td><td class="num">&ndash;</td><td class="num second">0.9840</td></tr>
+            <tr class="ours"><th scope="row">FFGaussType + 10&nbsp;s refinement</th><td>Anchors + available views</td><td class="num best">1.313</td><td class="num second">8.98</td><td class="num">&minus;0.388</td><td class="num">0.9825</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <figure class="plate wide results-figure">
+      <a class="zoom" href="static/images/qualitative-comparison.webp" title="Open full resolution"><img src="static/images/qualitative-comparison.webp" width="2400" height="1303" loading="lazy" alt="Qualitative comparison grid. Five test assets, ordered by edge fraction from 0.06 to 0.12, each shown as a reference normal map followed by normal and angular-error maps for FFGaussType, TexGaussian, 3DGS fitting at 500 and 32k steps, and Scaffold-GS fitting at 32k steps. Error maps use a colour scale from 0 to 45 degrees."></a>
+      <figcaption>
+        <strong>Qualitative comparison.</strong> Predicted normals and angular error (0&ndash;45&deg;) on five test assets. Rows are sorted by edge fraction, the share of pixels next to sharp creases; generally speaking, a higher edge fraction means a harder shape.
+      </figcaption>
+    </figure>
+
+    <figure class="plate results-figure figure-medium">
+      <a class="zoom" href="static/images/family-examples.webp" title="Open full resolution"><img src="static/images/family-examples.webp" width="2000" height="990" loading="lazy" alt="Reference and FFGaussType normal renderings for six glyphs: a 9, an R and an infinity sign from font families seen in training (ProzaLibre, Mirza, Batang), and an F, a U and an A from held-out families (SairaSemiCondensed, NotoSansChakma, NATS). Predictions match the references closely in all six."></a>
+      <figcaption>
+        <strong>Across font families.</strong> Reference and predicted normals for glyphs from font families seen in training and from families held out entirely.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="container" id="reuse" aria-labelledby="reuse-heading">
+    <h2 id="reuse-heading">In a scene</h2>
+    <p class="narrow-text section-intro">
+      Converted letters and icons, animated inside a Gaussian video scene.
+    </p>
+    <div class="plate wide video-grid">
+      <figure>
+        <video src="static/videos/coffee-fixed.mp4" poster="static/videos/coffee-fixed.webp" width="1280" height="720" autoplay muted loop playsinline controls preload="metadata"></video>
+        <figcaption>Fixed camera</figcaption>
+      </figure>
+      <figure>
+        <video src="static/videos/coffee-wide-left.mp4" poster="static/videos/coffee-wide-left.webp" width="1280" height="720" autoplay muted loop playsinline controls preload="metadata"></video>
+        <figcaption>Moving camera</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="container narrow" id="bibtex" aria-labelledby="bibtex-heading">
+    <div class="bibtex-head">
+      <h2 id="bibtex-heading">BibTeX</h2>
+      <button type="button" class="copy-button" data-copy="#bibtex-code">Copy</button>
+    </div>
+    <pre class="code"><code id="bibtex-code">@misc{feng2026ffgausstype,
+  title  = {{FFGaussType}: Feed-Forward Conversion of Glyph and {SVG}
+            Geometry into Compact {Gaussian} Assets},
+  author = {Feng, Haoan and Wang, Tianfu and Guan, Peimeng and
+            Lee, Dae Yeol and Su, Guan-ming},
+  year   = {2026}
+}</code></pre>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container narrow">
+    <h2 class="refs-heading">References</h2>
+    <ol class="refs">
+      <li id="ref-1">B. Xiong et al. TexGaussian: Generating High-quality PBR Material via Octree-based 3D Gaussian Splatting. CVPR 2025.</li>
+      <li id="ref-2">Z.-X. Zou et al. Triplane Meets Gaussian Splatting: Fast and Generalizable Single-View 3D Reconstruction with Transformers. CVPR 2024.</li>
+      <li id="ref-3">J. Tang et al. LGM: Large Multi-View Gaussian Model for High-Resolution 3D Content Creation. ECCV 2024.</li>
+      <li id="ref-4">B. Kerbl et al. 3D Gaussian Splatting for Real-Time Radiance Field Rendering. ACM TOG 2023.</li>
+      <li id="ref-5">T. Lu et al. Scaffold-GS: Structured 3D Gaussians for View-Adaptive Rendering. CVPR 2024.</li>
+      <li id="ref-6">S. Scolari. Mesh2Splat: Fast Mesh to 3D Gaussian Splat Conversion. <a href="https://github.com/electronicarts/mesh2splat">github.com/electronicarts/mesh2splat</a>, 2025.</li>
+      <li id="ref-7">J. Waczy&nacute;ska et al. GaMeS: Mesh-Based Adapting and Modification of Gaussian Splatting. Pattern Recognition 181, 2027.</li>
+      <li id="ref-8">T. Li et al. Neural 3D Video Synthesis from Multi-view Video. CVPR 2022. Source of the Coffee Martini scene.</li>
+    </ol>
+  </div>
+</footer>
+
+</body>
+</html>
