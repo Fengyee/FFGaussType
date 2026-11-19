@@ -4,13 +4,93 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FFGaussType: Feed-Forward Conversion of Glyph and SVG Geometry into Compact Gaussian Assets</title>
-  <meta name="description" content="FFGaussType converts extruded glyph and SVG outlines into Gaussian assets with surface normals in one forward pass. Materials and lighting are assigned afterwards.">
+  <meta name="description" content="FFGaussType converts glyph and SVG outlines into relightable Gaussian assets in 9.1 ms each, bringing text and icons into volumetric videos built on 4D Gaussians.">
+  <meta name="author" content="Haoan Feng, Tianfu Wang, Peimeng Guan, Dae Yeol Lee, Guan-ming Su">
+  <meta name="keywords" content="FFGaussType, Gaussian splatting, 4D Gaussians, volumetric video, feed-forward, glyph, SVG, typography, relighting">
+  <link rel="canonical" href="https://fengyee.github.io/FFGaussType/">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="FFGaussType">
   <meta property="og:title" content="FFGaussType: Feed-Forward Conversion of Glyph and SVG Geometry into Compact Gaussian Assets">
-  <meta property="og:description" content="One-pass conversion of glyph and SVG geometry into Gaussian assets with surface normals; materials and lighting are assigned afterwards.">
+  <meta property="og:description" content="FFGaussType converts glyph and SVG outlines into relightable Gaussian assets in 9.1 ms each, bringing text and icons into volumetric videos built on 4D Gaussians.">
   <meta property="og:url" content="https://fengyee.github.io/FFGaussType/">
   <meta property="og:image" content="https://fengyee.github.io/FFGaussType/static/images/social-preview.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Glyph and icon outlines converted by FFGaussType into Gaussian assets with surface normals.">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FFGaussType: Feed-Forward Conversion of Glyph and SVG Geometry into Compact Gaussian Assets">
+  <meta name="twitter:description" content="FFGaussType converts glyph and SVG outlines into relightable Gaussian assets in 9.1 ms each, bringing text and icons into volumetric videos built on 4D Gaussians.">
+  <meta name="twitter:image" content="https://fengyee.github.io/FFGaussType/static/images/social-preview.jpg">
+  <meta name="citation_title" content="FFGaussType: Feed-Forward Conversion of Glyph and SVG Geometry into Compact Gaussian Assets">
+  <meta name="citation_author" content="Haoan Feng">
+  <meta name="citation_author" content="Tianfu Wang">
+  <meta name="citation_author" content="Peimeng Guan">
+  <meta name="citation_author" content="Dae Yeol Lee">
+  <meta name="citation_author" content="Guan-ming Su">
+  <meta name="citation_publication_date" content="2026/11/19">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "FFGaussType: Feed-Forward Conversion of Glyph and SVG Geometry into Compact Gaussian Assets",
+  "name": "FFGaussType",
+  "description": "FFGaussType converts glyph and SVG outlines into relightable Gaussian assets in 9.1 ms each, bringing text and icons into volumetric videos built on 4D Gaussians.",
+  "url": "https://fengyee.github.io/FFGaussType/",
+  "image": "https://fengyee.github.io/FFGaussType/static/images/social-preview.jpg",
+  "datePublished": "2026-11-19",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Haoan Feng",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "University of Maryland, College Park"
+      }
+    },
+    {
+      "@type": "Person",
+      "name": "Tianfu Wang",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "University of Maryland, College Park"
+      }
+    },
+    {
+      "@type": "Person",
+      "name": "Peimeng Guan",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Dolby Laboratories Inc."
+      }
+    },
+    {
+      "@type": "Person",
+      "name": "Dae Yeol Lee",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Dolby Laboratories Inc."
+      }
+    },
+    {
+      "@type": "Person",
+      "name": "Guan-ming Su",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Dolby Laboratories Inc."
+      }
+    }
+  ],
+  "keywords": [
+    "Gaussian splatting",
+    "4D Gaussians",
+    "volumetric video",
+    "feed-forward 3D",
+    "typography",
+    "SVG",
+    "relighting"
+  ]
+}
+  </script>
   <meta name="color-scheme" content="light dark">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233B48FE'/%3E%3Cpath d='M20 14h26v9H30v7h13v9H30v11H20z' fill='white'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="static/css/style.css">
